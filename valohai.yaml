@@ -20,12 +20,13 @@
       - unzip -q /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa -d Category\ and\ Attribute\ Prediction\ Benchmark/ -x /
       - ls Category\ and\ Attribute\ Prediction\ Benchmark/
       - cd Category\ and\ Attribute\ Prediction\ Benchmark/Img
-      - unzip -qq img.zip
-      - ls
+      - ls ../../Category\ and\ Attribute\ Prediction\ Benchmark/
+      - unzip -q img.zip
+      - ls ../../Category\ and\ Attribute\ Prediction\ Benchmark/
       - cd ../../
+      - ls ./Category\ and\ Attribute\ Prediction\ Benchmark/
       - pwd
       - ls
-      - ls "Category and Attribute Prediction Benchmark/"
       - ls Category\ and\ Attribute\ Prediction\ Benchmark/
       - ls Category\ and\ Attribute\ Prediction\ Benchmark/Anno/
       - ls Category\ and\ Attribute\ Prediction\ Benchmark/Anno/list_bbox.txt
