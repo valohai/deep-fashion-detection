@@ -17,6 +17,7 @@
       - cd object_detection
       - mkdir -p Category\ and\ Attribute\ Prediction\ Benchmark
       - unzip -q /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa -d Category\ and\ Attribute\ Prediction\ Benchmark/ -x /
+      - ls Category\ and\ Attribute\ Prediction\ Benchmark/
       - unzip -q Category\ and\ Attribute\ Prediction\ Benchmark/Img/img.zip
       - python deep_fashion_to_tfrecord.py --output_path train.record --categories broad --evaluation_status train
       - python deep_fashion_to_tfrecord.py --output_path val.record --categories broad --evaluation_status val
