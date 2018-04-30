@@ -4,8 +4,25 @@
     name: Train model
     image: dcarnino/docker-tensorflow-object-detection
     command:
-      - cd object_detection/training/
+      - cd /tensorflow/models/research/
+      - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
+      - cd object_detection/
+      - mkdir -p training
+      - cp /valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config training/
+      - mkdir training/data
+      - cp /valohai/inputs/records/*.record training/data/
+      - mkdir training/models
+      - tar -xzvf /valohai/inputs/pretrained_net/faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz -C training/models/ --strip-components=1
+      - mkdir training/models/train
+      - cp train.py training/
+      - cd training/
       - python train.py --logtostderr --train_dir=./models/train --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
+    inputs:
+      - name: records
+      - name: records
+      - name: records
+      - name: pretrained_net
+        default: http://download.tensorflow.org/models/object_detection/faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz
 
 - step:
     name: Dataset preparation
