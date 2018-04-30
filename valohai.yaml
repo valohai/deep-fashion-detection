@@ -22,6 +22,10 @@
       - cd Category\ and\ Attribute\ Prediction\ Benchmark/Img
       - unzip -qq img.zip
       - cd ../../
+      - pwd
+      - ls Category and Attribute Prediction Benchmark/
+      - ls Category and Attribute Prediction Benchmark/Anno/
+      - Category and Attribute Prediction Benchmark/Anno/list_bbox.txt
       - python deep_fashion_to_tfrecord.py --output_path train.record --categories broad --evaluation_status train
       - python deep_fashion_to_tfrecord.py --output_path val.record --categories broad --evaluation_status val
       - python deep_fashion_to_tfrecord.py --output_path test.record --categories broad --evaluation_status test
