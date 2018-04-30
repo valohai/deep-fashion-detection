@@ -12,7 +12,8 @@
     image: dcarnino/docker-tensorflow-object-detection
     command:
       - ls -la /valohai/inputs/*
-      - cp deep_fashion_to_tf_record.py object_detection/
+      - cd /tensorflow/models/research/
+      - cp /valohai/repository/deep_fashion_to_tf_record.py object_detection/
       - cd object_detection
       - unzip /valohai/inputs/category_and_attribute_prediction_benchmark
       - ls
