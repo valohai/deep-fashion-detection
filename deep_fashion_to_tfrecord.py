@@ -77,9 +77,8 @@ def main(_):
   cat_df = cat_img_df.merge(cat_cloth_df, how='left', on='category_label')
   examples_df = cat_df.merge(bbox_df, how='left', on='image_name')
   examples_df = examples_df.merge(stage_df, how='left', on='image_name')
-  # to remove -->
+  # Select train, val or test images
   examples_df = examples_df[examples_df["evaluation_status"] == FLAGS.evaluation_status]
-  examples_df = examples_df.head(1000)
 
   for irow, example in examples_df.iterrows():
     tf_example = create_tf_example(example, path_root="category_and_attribute_prediction_benchmark/Img/")
