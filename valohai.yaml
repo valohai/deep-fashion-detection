@@ -21,6 +21,7 @@
       - ls Category\ and\ Attribute\ Prediction\ Benchmark/
       - cd Category\ and\ Attribute\ Prediction\ Benchmark/Img
       - unzip -qq img.zip
+      - ls
       - cd ../../
       - pwd
       - ls
