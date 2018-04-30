@@ -18,12 +18,10 @@
       - mkdir -p Category\ and\ Attribute\ Prediction\ Benchmark
       - unzip -q /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa -d Category\ and\ Attribute\ Prediction\ Benchmark/ -x /
       - unzip -q Category\ and\ Attribute\ Prediction\ Benchmark/Img/img.zip
-      - ls Category\ and\ Attribute\ Prediction\ Benchmark/
-      - ls Category\ and\ Attribute\ Prediction\ Benchmark/
-      #- python deep_fashion_to_tfrecord.py --output_path train.record --categories broad --evaluation_status train
-      #- python deep_fashion_to_tfrecord.py --output_path val.record --categories broad --evaluation_status val
-      #- python deep_fashion_to_tfrecord.py --output_path test.record --categories broad --evaluation_status test
-      #- mv *.record /valohai/outputs/
+      - python deep_fashion_to_tfrecord.py --output_path train.record --categories broad --evaluation_status train
+      - python deep_fashion_to_tfrecord.py --output_path val.record --categories broad --evaluation_status val
+      - python deep_fashion_to_tfrecord.py --output_path test.record --categories broad --evaluation_status test
+      - mv *.record /valohai/outputs/
     inputs:
       - name: category_and_attribute_prediction_benchmark
         default: https://www.dropbox.com/sh/ryl8efwispnjw21/AACt2dLasqSDsCf-kcQwoWyfa?dl=1
