@@ -32,11 +32,10 @@
     command:
       - pwd
       - ls -la
-      - ls ../../
-      - ls ../
+      - ls /tensorflow/
       - nvidia-smi
       - python --version
       - nvcc --version | grep release
       - cat /usr/include/x86_64-linux-gnu/cudnn_v*.h | grep CUDNN_MAJOR -A 2
-      - cd ../../
+      - cd /tensorflow/models/research/
       - python object_detection/builders/model_builder_test.py
