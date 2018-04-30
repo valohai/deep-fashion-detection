@@ -13,6 +13,7 @@
     command:
       - ls -la /valohai/inputs/*
       - cd /tensorflow/models/research/
+      - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
       - cp /valohai/repository/deep_fashion_to_tfrecord.py object_detection/
       - cd object_detection
       - mkdir -p Category\ and\ Attribute\ Prediction\ Benchmark
