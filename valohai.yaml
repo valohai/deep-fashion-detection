@@ -1,0 +1,39 @@
+---
+
+- step:
+    name: Train model
+    image: dcarnino/docker-tensorflow-object-detection
+    command:
+      - cd object_detection/training/
+      - python train.py --logtostderr --train_dir=./models/train --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
+
+- step:
+    name: Dataset preparation
+    image: dcarnino/docker-tensorflow-object-detection
+    command:
+      - ls -la /valohai/inputs/*
+      - cp deep_fashion_to_tf_record.py object_detection/
+      - cd object_detection
+      - unzip /valohai/inputs/category_and_attribute_prediction_benchmark
+      - ls
+      - cd Category\ and\ Attribute\ Prediction\ Benchmark/Img
+      - unzip img
+      - cd ../../
+      - python deep_fashion_to_tfrecord.py --output_path train.record --categories broad --evaluation_status train
+      - python deep_fashion_to_tfrecord.py --output_path val.record --categories broad --evaluation_status val
+      - python deep_fashion_to_tfrecord.py --output_path test.record --categories broad --evaluation_status test
+    inputs:
+      - name: category_and_attribute_prediction_benchmark
+        default: https://www.dropbox.com/sh/ryl8efwispnjw21/AACt2dLasqSDsCf-kcQwoWyfa?dl=1
+
+- step:
+    name: Worker environment check
+    image: dcarnino/docker-tensorflow-object-detection
+    command:
+      - pwd
+      - ls -la
+      - nvidia-smi
+      - python --version
+      - nvcc --version | grep release
+      - cat /usr/include/x86_64-linux-gnu/cudnn_v*.h | grep CUDNN_MAJOR -A 2
+      - python object_detection/builders/model_builder_test.py
