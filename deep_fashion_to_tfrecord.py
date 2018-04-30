@@ -63,10 +63,10 @@ def main(_):
   writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
 
   # Annotation file paths
-  bbox_file = "Category and Attribute Prediction Benchmark/Anno/list_bbox.txt"
-  cat_cloth_file = "Category and Attribute Prediction Benchmark/Anno/list_category_cloth.txt"
-  cat_img_file = "Category and Attribute Prediction Benchmark/Anno/list_category_img.txt"
-  stage_file = "Category and Attribute Prediction Benchmark/Eval/list_eval_partition.txt"
+  bbox_file = "category_and_attribute_prediction_benchmark/Anno/list_bbox.txt"
+  cat_cloth_file = "category_and_attribute_prediction_benchmark/Anno/list_category_cloth.txt"
+  cat_img_file = "category_and_attribute_prediction_benchmark/Anno/list_category_img.txt"
+  stage_file = "category_and_attribute_prediction_benchmark/Eval/list_eval_partition.txt"
   # Read annotation files
   bbox_df = pd.read_csv(bbox_file, sep='\s+', skiprows=1)
   cat_cloth_df = pd.read_csv(cat_cloth_file, sep='\s+', skiprows=1)
@@ -82,7 +82,7 @@ def main(_):
   examples_df = examples_df.head(1000)
 
   for irow, example in examples_df.iterrows():
-    tf_example = create_tf_example(example, path_root="Category and Attribute Prediction Benchmark/Img/")
+    tf_example = create_tf_example(example, path_root="category_and_attribute_prediction_benchmark/Img/")
     writer.write(tf_example.SerializeToString())
 
   writer.close()
