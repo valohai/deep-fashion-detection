@@ -25,6 +25,7 @@
       - ls ../../Category\ and\ Attribute\ Prediction\ Benchmark/
       - cd ../../
       - ls ./Category\ and\ Attribute\ Prediction\ Benchmark/
+      - ls ./Category\ and\ Attribute\ Prediction\ Benchmark/
       - ls ./Category\ and\ Attribute\ Prediction\ Benchmark/
       - ls ./Category\ and\ Attribute\ Prediction\ Benchmark/Anno/
       - ls ./Category\ and\ Attribute\ Prediction\ Benchmark/Anno/list_bbox.txt
