@@ -15,8 +15,9 @@
       - cd /tensorflow/models/research/
       - cp /valohai/repository/deep_fashion_to_tf_record.py object_detection/
       - cd object_detection
-      - unzip /valohai/inputs/category_and_attribute_prediction_benchmark
+      - unzip /valohai/inputs/category_and_attribute_prediction_benchmark/Category\ and\ Attribute\ Prediction\ Benchmark.zip
       - ls
+      - ls /valohai/inputs/category_and_attribute_prediction_benchmark/
       - cd Category\ and\ Attribute\ Prediction\ Benchmark/Img
       - unzip img
       - cd ../../
