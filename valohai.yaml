@@ -13,7 +13,7 @@
     command:
       - ls -la /valohai/inputs/*
       - cd /tensorflow/models/research/
-      - cp /valohai/repository/deep_fashion_to_tf_record.py object_detection/
+      - cp /valohai/repository/deep_fashion_to_tfrecord.py object_detection/
       - cd object_detection
       - mkdir -p Category\ and\ Attribute\ Prediction\ Benchmark
       - unzip /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa -d Category\ and\ Attribute\ Prediction\ Benchmark/
@@ -21,9 +21,9 @@
       - cd Category\ and\ Attribute\ Prediction\ Benchmark/Img
       - unzip img.zip
       - cd ../../
-      - python deep_fashion_to_tfrecord.py --output_path train.record --categories broad --evaluation_status train
-      - python deep_fashion_to_tfrecord.py --output_path val.record --categories broad --evaluation_status val
-      - python deep_fashion_to_tfrecord.py --output_path test.record --categories broad --evaluation_status test
+      - python deep_fashion_totfrecord.py --output_path train.record --categories broad --evaluation_status train
+      - python deep_fashion_totfrecord.py --output_path val.record --categories broad --evaluation_status val
+      - python deep_fashion_totfrecord.py --output_path test.record --categories broad --evaluation_status test
       - mv *.record /valohai/outputs/
     inputs:
       - name: category_and_attribute_prediction_benchmark
