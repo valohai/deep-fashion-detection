@@ -10,7 +10,8 @@
       - mkdir -p training
       - cp /valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config training/
       - mkdir training/data
-      - cp /valohai/inputs/records/*.record training/data/
+      - cp /valohai/inputs/train_records/train.record training/data/
+      - cp /valohai/inputs/val_records/val.record training/data/
       - mkdir training/models
       - tar -xzvf /valohai/inputs/pretrained_net/faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz -C training/models/ --strip-components=1
       - mkdir training/models/train
