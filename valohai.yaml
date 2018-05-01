@@ -5,9 +5,6 @@
     image: dcarnino/docker-tensorflow-object-detection
     command:
       - cd /tensorflow/models/research/
-      - python setup.py build
-      - python setup.py install
-      - cat object_detection/utils/learning_schedules.py
       - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
       - cd object_detection/
       - mkdir -p training
