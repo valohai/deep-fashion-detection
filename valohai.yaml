@@ -10,6 +10,7 @@
       - mkdir -p training
       - cp /valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config training/
       - mkdir training/data
+      - cp /valohai/repository/deepfashion_label_map.pbtxt training/data/
       - cp /valohai/inputs/train_records/train.record training/data/
       - cp /valohai/inputs/val_records/val.record training/data/
       - mkdir training/models
