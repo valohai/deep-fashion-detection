@@ -4,7 +4,6 @@
     name: Train model
     image: dcarnino/docker-tensorflow-object-detection
     command:
-      - python --version
       - cd /tensorflow/models/research/
       - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
       - cd object_detection/
@@ -19,7 +18,7 @@
       - mkdir training/models/train
       - cp train.py training/
       - cd training/
-      - python train.py --logtostderr --train_dir=./models/train --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
+      - python3 train.py --logtostderr --train_dir=./models/train --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
     inputs:
       - name: train_records
       - name: val_records
@@ -41,11 +40,11 @@
       - unzip -q img.zip
       - cd ../../
       - echo "Formatting training images to tfrecord..."
-      - python deep_fashion_to_tfrecord.py --output_path train.record --categories broad --evaluation_status train
+      - python3 deep_fashion_to_tfrecord.py --output_path train.record --categories broad --evaluation_status train
       - echo "Formatting validation images to tfrecord..."
-      - python deep_fashion_to_tfrecord.py --output_path val.record --categories broad --evaluation_status val
+      - python3 deep_fashion_to_tfrecord.py --output_path val.record --categories broad --evaluation_status val
       - echo "Formatting test images to tfrecord..."
-      - python deep_fashion_to_tfrecord.py --output_path test.record --categories broad --evaluation_status test
+      - python3 deep_fashion_to_tfrecord.py --output_path test.record --categories broad --evaluation_status test
       - mv *.record /valohai/outputs/
     inputs:
       - name: category_and_attribute_prediction_benchmark
@@ -64,4 +63,4 @@
       - cat /usr/include/x86_64-linux-gnu/cudnn_v*.h | grep CUDNN_MAJOR -A 2
       - cd /tensorflow/models/research/
       - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
-      - python object_detection/builders/model_builder_test.py
+      - python3 object_detection/builders/model_builder_test.py
