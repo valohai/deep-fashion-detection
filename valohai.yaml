@@ -4,12 +4,14 @@
     name: Train model
     image: dcarnino/docker-tensorflow-object-detection
     command:
+      - num_steps: 200000
       - pip3 install tf-nightly-gpu
       - cd /tensorflow/models/research/
       - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
       - cd object_detection/
       - mkdir -p training
       - cp /valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config training/
+      - sed -i -e "114s/num_steps: 200000/num_steps: {parameters}/" training/faster_rcnn_inception_resnet_v2_atrous_coco.config
       - mkdir training/data
       - cp /valohai/repository/deepfashion_label_map.pbtxt training/data/
       - cp /valohai/inputs/train_records/train.record training/data/
@@ -21,7 +23,7 @@
       - cp export_inference_graph.py training/
       - cd training/
       - python3 train.py --logtostderr --train_dir=./models/train --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
-      - python3 export_inference_graph.py --input_type image_tensor --pipeline_config_path ./faster_rcnn_inception_resnet_v2_atrous_coco.config --trained_checkpoint_prefix ./models/train/model.ckpt-100 --output_directory ./fine_tuned_model
+      - python3 export_inference_graph.py --input_type image_tensor --pipeline_config_path ./faster_rcnn_inception_resnet_v2_atrous_coco.config --trained_checkpoint_prefix ./models/train/model.ckpt-{parameters} --output_directory ./fine_tuned_model
       - zip -r fine_tuned_model.zip fine_tuned_model
       - mv fine_tuned_model.zip /valohai/outputs/
     inputs:
@@ -29,6 +31,12 @@
       - name: val_records
       - name: pretrained_net
         default: http://download.tensorflow.org/models/object_detection/faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz
+    parameters:
+      - name: num_steps
+        type: integer
+        pass-as: {v}
+        description: Number of steps to run the trainer
+        default: 200000
 
 - step:
     name: Dataset preparation
