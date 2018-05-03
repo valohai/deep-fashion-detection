@@ -11,7 +11,7 @@
       - cd object_detection/
       - mkdir -p training
       - cp /valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config training/
-      - sed -i -e "114s/num_steps: 200000/num_steps: $nsteps/" training/faster_rcnn_inception_resnet_v2_atrous_coco.config
+      - sed -i -e "114s/num_steps&#58; 200000/num_steps&#58; $nsteps/" training/faster_rcnn_inception_resnet_v2_atrous_coco.config
       - mkdir training/data
       - cp /valohai/repository/deepfashion_label_map.pbtxt training/data/
       - cp /valohai/inputs/train_records/train.record training/data/
