@@ -18,8 +18,12 @@
       - tar -xzvf /valohai/inputs/pretrained_net/faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz -C training/models/ --strip-components=1
       - mkdir training/models/train
       - cp train.py training/
+      - cp export_inference_graph.py training/
       - cd training/
       - python3 train.py --logtostderr --train_dir=./models/train --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
+      - python3 export_inference_graph.py --input_type image_tensor --pipeline_config_path ./faster_rcnn_inception_resnet_v2_atrous_coco.config --trained_checkpoint_prefix ./models/train/model.ckpt-100 --output_directory ./fine_tuned_model
+      - zip -r fine_tuned_model.zip fine_tuned_model
+      - mv fine_tuned_model.zip /valohai/outputs/
     inputs:
       - name: train_records
       - name: val_records
