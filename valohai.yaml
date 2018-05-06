@@ -20,7 +20,6 @@
       - cd training/
       - mkdir models/eval
       - python3 eval.py --logtostderr --eval_dir=./models/eval --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
-      - mv tensorflow.log /valohai/outputs/tensorflow_eval.log
       - cd models
       - zip -r eval_val.zip eval
       - mv eval_val.zip /valohai/outputs/
