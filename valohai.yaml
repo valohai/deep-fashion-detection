@@ -1,6 +1,34 @@
 ---
 
 - step:
+    name: Eval model
+    image: dcarnino/docker-tensorflow-object-detection
+    command:
+      - pip3 install tf-nightly-gpu
+      - cd /tensorflow/models/research/
+      - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
+      - cd object_detection/
+      - mkdir -p training
+      - cp /valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config training/
+      - cp eval.py training/
+      - mkdir training/data
+      - cp /valohai/repository/deepfashion_label_map.pbtxt training/data/
+      - cp /valohai/inputs/val_records/val.record training/data/
+      - mkdir training/
+      - unzip /valohai/inputs/trained_net/fine_tuned_model.zip -d training/
+      - mv training/fine_tuned_model training/models
+      - cd training/
+      - mkdir models/eval
+      - python3 eval.py --logtostderr --eval_dir=./models/eval --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
+      - mv tensorflow.log /valohai/outputs/tensorflow_eval.log
+      - cd models
+      - zip -r eval_val.zip eval
+      - mv eval_val.zip /valohai/outputs/
+    inputs:
+      - name: val_records
+      - name: trained_net
+
+- step:
     name: Train model
     image: dcarnino/docker-tensorflow-object-detection
     command:
