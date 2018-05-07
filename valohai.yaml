@@ -16,8 +16,7 @@
       - mkdir training/
       - unzip /valohai/inputs/trained_net/fine_tuned_model.zip -d training/
       - mv training/fine_tuned_model training/models
-      - echo 'model_checkpoint_path: "model.ckpt"
-all_model_checkpoint_paths: "model.ckpt"' > training/models/checkpoint
+      - printf 'model_checkpoint_path: "model.ckpt"\nall_model_checkpoint_paths: "model.ckpt"\n' > training/models/checkpoint
       - cd training/
       - mkdir models/eval
       - python3 eval.py --logtostderr --eval_dir=./models/eval --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config --checkpoint_dir=./models
