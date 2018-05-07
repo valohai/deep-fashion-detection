@@ -4,7 +4,6 @@
     name: Eval model
     image: dcarnino/docker-tensorflow-object-detection
     command:
-      - pip3 install tf-nightly-gpu
       - cd /tensorflow/models/research/
       - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
       - cd object_detection/
@@ -32,7 +31,6 @@
     image: dcarnino/docker-tensorflow-object-detection
     command:
       - nsteps=100
-      - pip3 install tf-nightly-gpu
       - cd /tensorflow/models/research/
       - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
       - cd object_detection/
