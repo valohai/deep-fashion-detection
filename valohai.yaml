@@ -12,6 +12,7 @@
       - cp /valohai/repository/eval.py training/
       - mkdir training/data
       - cp /valohai/repository/deepfashion_label_map.pbtxt training/data/
+      - [ -f /valohai/inputs/val_records/test.record ] && mv /valohai/inputs/val_records/test.record /valohai/inputs/val_records/val.record
       - cp /valohai/inputs/val_records/val.record training/data/
       - unzip /valohai/inputs/trained_net/fine_tuned_model.zip -d training/
       - mv training/fine_tuned_model training/models
