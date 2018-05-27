@@ -83,9 +83,9 @@
       - python3 train.py --logtostderr --train_dir=./models/train --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
       - python3 export_inference_graph.py --input_type image_tensor --pipeline_config_path ./faster_rcnn_inception_resnet_v2_atrous_coco.config --trained_checkpoint_prefix ./models/train/model.ckpt-$nsteps --output_directory ./fine_tuned_model
       - zip -r fine_tuned_model.zip fine_tuned_model
-      - zip -r models.zip models
+      - zip -r train.zip ./models/train
       - mv fine_tuned_model.zip /valohai/outputs/
-      - mv models.zip /valohai/outputs/
+      - mv train.zip /valohai/outputs/
       - mv tensorflow.log /valohai/outputs/
     inputs:
       - name: train_records
