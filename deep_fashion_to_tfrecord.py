@@ -1,6 +1,8 @@
 import tensorflow as tf
 import pandas as pd
 from PIL import Image
+import io
+import random
 
 from object_detection.utils import dataset_util
 
@@ -16,13 +18,34 @@ LABEL_DICT = {1: "top", 2: "bottom", 3: "long"}
 
 def create_tf_example(example, path_root):
 
-  width, height = Image.open(path_root + example["image_name"]).size
+  # import image
+  f_image = Image.open(path_root + example["image_name"])
+
+  # get width and height of image
+  width, height = f_image.size
+
+  # crop image randomly around bouding box within a 0.15*bbox extra range
+  if FLAGS.evaluation_status != "test":
+
+        left = example['x_1'] - round(random.random()*0.15*(example['x_2'] - example['x_1']))
+        top = example['y_1'] - round(random.random()*0.15*(example['y_2'] - example['y_1']))
+        right = example['x_2'] + round(random.random()*0.15*(example['x_2'] - example['x_1']))
+        bottom = example['y_2'] + round(random.random()*0.15*(example['y_2'] - example['y_1']))
+
+        if left < 0: left = 0
+        if right >= width: right = width-1
+        if top < 0: top = 0
+        if bottom >= height: bottom = height-1
+
+        f_image = f_image.crop((left, top, right, bottom))
+
+  # read image as bytes string
+  encoded_image_data = io.BytesIO()
+  f_image.save(encoded_image_data, format='jpeg')
+  encoded_image_data = encoded_image_data.getvalue()
 
   filename = example["image_name"] # Filename of the image. Empty if image is not from file
   filename = filename.encode()
-
-  with tf.gfile.GFile(path_root + example['image_name'], 'rb') as fid:
-        encoded_image_data = fid.read()
 
   image_format = 'jpeg'.encode() # b'jpeg' or b'png'
 
