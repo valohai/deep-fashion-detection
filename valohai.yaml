@@ -103,7 +103,7 @@
       - cd object_detection
       - mkdir -p category_and_attribute_prediction_benchmark
       - echo "Unzipping deep fashion dataset..."
-      - unzip -q /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa -d category_and_attribute_prediction_benchmark/ -x /
+      - unzip -q /valohai/inputs/category_and_attribute_prediction_benchmark/r765kzkp-56bd4zaq-ssjtvi4p-3vzaa6fb -d category_and_attribute_prediction_benchmark/ -x /
       - cd category_and_attribute_prediction_benchmark/Img/
       - unzip -q img.zip
       - cd ../../
