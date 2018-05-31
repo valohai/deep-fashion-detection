@@ -66,7 +66,7 @@ def create_tf_example(example, path_root):
       ymaxs = [example['y_2']/height] # List of normalized bottom y coordinates in bounding box
              # (1 per box)
         
-  assert (xmins[0] >= 0.) and (xmaxs[0] < 1.01) and (ymins[0] >= 0.) and (ymaxs[0] < 1.01), (example, _width, _height, width, height, left, right, top, bottom)
+  assert (xmins[0] >= 0.) and (xmaxs[0] < 1.01) and (ymins[0] >= 0.) and (ymaxs[0] < 1.01), (example, _width, _height, width, height, left, right, top, bottom, xmins, xmaxs, ymins, ymaxs)
 
   if FLAGS.categories == 'broad':
       classes_text = [LABEL_DICT[example['category_type']].encode()] # List of string class name of bounding box (1 per box)
