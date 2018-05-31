@@ -33,9 +33,9 @@ def create_tf_example(example, path_root):
         bottom = example['y_2'] + round((random.random()*0.15+0.05)*(example['y_2'] - example['y_1']))
 
         if left < 0: left = 0
-        if right >= width: right = width-1
+        if right >= width: right = width
         if top < 0: top = 0
-        if bottom >= height: bottom = height-1
+        if bottom >= height: bottom = height
 
         f_image = f_image.crop((left, top, right, bottom))
         _width, _height = width, height
