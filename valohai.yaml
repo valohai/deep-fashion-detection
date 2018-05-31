@@ -102,8 +102,14 @@
       - cp /valohai/repository/deep_fashion_to_tfrecord.py object_detection/
       - cd object_detection
       - mkdir -p category_and_attribute_prediction_benchmark
+      - echo "Downloading from Google Drive..."
+      - CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=1eFP3_HApf-AsYF--0OIlDNSdWevn0byq" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
+      - wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=1eFP3_HApf-AsYF--0OIlDNSdWevn0byq" -O /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa
+      - rm -rf /tmp/cookies.txt
       - echo "Unzipping deep fashion dataset..."
-      - unzip -q /valohai/inputs/category_and_attribute_prediction_benchmark/r765kzkp-56bd4zaq-ssjtvi4p-3vzaa6fb -d category_and_attribute_prediction_benchmark/ -x /
+      - unzip -q /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa -d category_and_attribute_prediction_benchmark/
+      - mv category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa ./AACt2dLasqSDsCf-kcQwoWyfa
+      - mv ./AACt2dLasqSDsCf-kcQwoWyfa/* category_and_attribute_prediction_benchmark/
       - cd category_and_attribute_prediction_benchmark/Img/
       - unzip -q img.zip
       - cd ../../
@@ -114,9 +120,6 @@
       - echo "Formatting test images to tfrecord..."
       - python3 deep_fashion_to_tfrecord.py --output_path test.record --categories broad --evaluation_status test
       - mv *.record /valohai/outputs/
-    inputs:
-      - name: category_and_attribute_prediction_benchmark
-        default: https://www.dropbox.com/sh/ryl8efwispnjw21/AACt2dLasqSDsCf-kcQwoWyfa?dl=1
 
 - step:
     name: Worker environment check
