@@ -102,6 +102,7 @@
       - cp /valohai/repository/deep_fashion_to_tfrecord.py object_detection/
       - cd object_detection
       - mkdir -p category_and_attribute_prediction_benchmark
+      - mkdir -p /valohai/inputs/category_and_attribute_prediction_benchmark
       - echo "Downloading from Google Drive..."
       - CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=1eFP3_HApf-AsYF--0OIlDNSdWevn0byq" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
       - wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=1eFP3_HApf-AsYF--0OIlDNSdWevn0byq" -O /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa
