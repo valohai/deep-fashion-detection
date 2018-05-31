@@ -38,8 +38,7 @@ def create_tf_example(example, path_root):
         if bottom >= height: bottom = height-1
 
         f_image = f_image.crop((left, top, right, bottom))
-        width = right - left
-        height = bottom - top
+        width, height = f_image.size
 
   # read image as bytes string
   encoded_image_data = io.BytesIO()
@@ -65,6 +64,8 @@ def create_tf_example(example, path_root):
       ymins = [example['y_1']/height] # List of normalized top y coordinates in bounding box (1 per box)
       ymaxs = [example['y_2']/height] # List of normalized bottom y coordinates in bounding box
              # (1 per box)
+        
+  assert (xmins[0] >= 0.) and (xmaxs[0] < 1.01) and (ymins[0] >= 0.) and (ymaxs[0] < 1.01)
 
   if FLAGS.categories == 'broad':
       classes_text = [LABEL_DICT[example['category_type']].encode()] # List of string class name of bounding box (1 per box)
