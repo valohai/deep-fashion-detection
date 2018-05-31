@@ -27,10 +27,10 @@ def create_tf_example(example, path_root):
   # crop image randomly around bouding box within a 0.15*bbox extra range
   if FLAGS.evaluation_status != "test":
 
-        left = example['x_1'] - round(random.random()*0.15*(example['x_2'] - example['x_1']))
-        top = example['y_1'] - round(random.random()*0.15*(example['y_2'] - example['y_1']))
-        right = example['x_2'] + round(random.random()*0.15*(example['x_2'] - example['x_1']))
-        bottom = example['y_2'] + round(random.random()*0.15*(example['y_2'] - example['y_1']))
+        left = example['x_1'] - round((random.random()*0.15+0.05)*(example['x_2'] - example['x_1']))
+        top = example['y_1'] - round((random.random()*0.15+0.05)*(example['y_2'] - example['y_1']))
+        right = example['x_2'] + round((random.random()*0.15+0.05)*(example['x_2'] - example['x_1']))
+        bottom = example['y_2'] + round((random.random()*0.15+0.05)*(example['y_2'] - example['y_1']))
 
         if left < 0: left = 0
         if right >= width: right = width-1
@@ -38,6 +38,8 @@ def create_tf_example(example, path_root):
         if bottom >= height: bottom = height-1
 
         f_image = f_image.crop((left, top, right, bottom))
+        width = right - left
+        height = bottom - top
 
   # read image as bytes string
   encoded_image_data = io.BytesIO()
@@ -48,12 +50,20 @@ def create_tf_example(example, path_root):
   filename = filename.encode()
 
   image_format = 'jpeg'.encode() # b'jpeg' or b'png'
-
-  xmins = [example['x_1']/width] # List of normalized left x coordinates in bounding box (1 per box)
-  xmaxs = [example['x_2']/width] # List of normalized right x coordinates in bounding box
+  
+  if FLAGS.evaluation_status != "test":
+      xmins = [(example['x_1']-left)/width] # List of normalized left x coordinates in bounding box (1 per box)
+      xmaxs = [(example['x_2']-left)/width] # List of normalized right x coordinates in bounding box
              # (1 per box)
-  ymins = [example['y_1']/height] # List of normalized top y coordinates in bounding box (1 per box)
-  ymaxs = [example['y_2']/height] # List of normalized bottom y coordinates in bounding box
+      ymins = [(example['y_1']-top)/height] # List of normalized top y coordinates in bounding box (1 per box)
+      ymaxs = [(example['y_2']-top)/height] # List of normalized bottom y coordinates in bounding box
+             # (1 per box)
+  else:
+      xmins = [example['x_1']/width] # List of normalized left x coordinates in bounding box (1 per box)
+      xmaxs = [example['x_2']/width] # List of normalized right x coordinates in bounding box
+             # (1 per box)
+      ymins = [example['y_1']/height] # List of normalized top y coordinates in bounding box (1 per box)
+      ymaxs = [example['y_2']/height] # List of normalized bottom y coordinates in bounding box
              # (1 per box)
 
   if FLAGS.categories == 'broad':
