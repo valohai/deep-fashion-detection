@@ -112,6 +112,8 @@ def main(_):
   examples_df = examples_df.merge(stage_df, how='left', on='image_name')
   # Select train, val or test images
   examples_df = examples_df[examples_df["evaluation_status"] == FLAGS.evaluation_status]
+  # Shuffle
+  examples_df = examples_df.sample(frac=1).reset_index(drop=True)
 
   for irow, example in examples_df.iterrows():
     tf_example = create_tf_example(example, path_root="category_and_attribute_prediction_benchmark/Img/")
