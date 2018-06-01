@@ -67,6 +67,9 @@ def create_tf_example(example, path_root):
              # (1 per box)
         
   assert (xmins[0] >= 0.) and (xmaxs[0] < 1.01) and (ymins[0] >= 0.) and (ymaxs[0] < 1.01), (example, _width, _height, width, height, left, right, top, bottom, xmins, xmaxs, ymins, ymaxs)
+  
+  if width < 50 or height < 50 or (xmaxs[0] - xmins[0])/(ymaxs[0] - ymins[0]) < 0.2 or (xmaxs[0] - xmins[0])/(ymaxs[0] - ymins[0]) > 5.:
+    return None
 
   if FLAGS.categories == 'broad':
       classes_text = [LABEL_DICT[example['category_type']].encode()] # List of string class name of bounding box (1 per box)
@@ -117,9 +120,15 @@ def main(_):
   # Shuffle
   examples_df = examples_df.sample(frac=1).reset_index(drop=True)
 
+  none_counter = 0
   for irow, example in examples_df.iterrows():
     tf_example = create_tf_example(example, path_root="category_and_attribute_prediction_benchmark/Img/")
-    writer.write(tf_example.SerializeToString())
+    if tf_example is not None:
+      writer.write(tf_example.SerializeToString())
+    else:
+      none_counter += 1
+  print("Skipped %d images."%none_counter)
+      
 
   writer.close()
 
