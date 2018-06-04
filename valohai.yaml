@@ -106,11 +106,17 @@
       - echo "Unzipping DeepFashion images..."
       - unzip -q -d /valohai/inputs/dataset/Img /valohai/inputs/dataset/Img/img.zip
       - echo "Formatting training images to train.record..."
-      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/train.record --categories broad --evaluation_status train
+      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/train.record --evaluation_status train {parameters}
       - echo "Formatting validation images to val.record..."
-      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/val.record --categories broad --evaluation_status val
+      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/val.record --evaluation_status val {parameters}
       - echo "Formatting test images to test.record..."
-      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/test.record --categories broad --evaluation_status test
+      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/test.record --evaluation_status test {parameters}
+    parameters:
+      - name: categories
+        pass-as: --categories {v}
+        description: The level of categories; broad or fine
+        type: string
+        default: broad
     inputs:
       - name: dataset
         default: https://s3-eu-west-1.amazonaws.com/valohai-examples/deep-fashion-detection/category-and-attribute-prediction-benchmark-v1.1.zip
