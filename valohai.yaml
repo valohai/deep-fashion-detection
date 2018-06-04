@@ -97,30 +97,23 @@
     name: Dataset preparation
     image: dcarnino/docker-tensorflow-object-detection
     command:
-      - cd /tensorflow/models/research/
-      - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
-      - cp /valohai/repository/deep_fashion_to_tfrecord.py object_detection/
-      - cd object_detection
-      - mkdir -p category_and_attribute_prediction_benchmark
-      - mkdir -p /valohai/inputs/category_and_attribute_prediction_benchmark
-      - echo "Downloading from Google Drive..."
-      - CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=1eFP3_HApf-AsYF--0OIlDNSdWevn0byq" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
-      - wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=1eFP3_HApf-AsYF--0OIlDNSdWevn0byq" -O /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa
-      - rm -rf /tmp/cookies.txt
-      - echo "Unzipping deep fashion dataset..."
-      - unzip -q /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa -d category_and_attribute_prediction_benchmark/
-      - mv category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa ./AACt2dLasqSDsCf-kcQwoWyfa
-      - mv ./AACt2dLasqSDsCf-kcQwoWyfa/* category_and_attribute_prediction_benchmark/
-      - cd category_and_attribute_prediction_benchmark/Img/
-      - unzip -q img.zip
-      - cd ../../
-      - echo "Formatting training images to tfrecord..."
-      - python3 deep_fashion_to_tfrecord.py --output_path train.record --categories broad --evaluation_status train
-      - echo "Formatting validation images to tfrecord..."
-      - python3 deep_fashion_to_tfrecord.py --output_path val.record --categories broad --evaluation_status val
-      - echo "Formatting test images to tfrecord..."
-      - python3 deep_fashion_to_tfrecord.py --output_path test.record --categories broad --evaluation_status test
-      - mv *.record /valohai/outputs/
+      - export PYTHONPATH=$PYTHONPATH:/tensorflow/models/research:/tensorflow/models/research/slim
+      - cd /tensorflow/models/research/object_detection/
+      - cp /valohai/repository/deep_fashion_to_tfrecord.py .
+      - echo "Unzipping DeepFashion dataset wrapper..."
+      - unzip -q -d /valohai/inputs/dataset /valohai/inputs/dataset/*.zip
+      - mv /valohai/inputs/dataset/AACt2dLasqSDsCf-kcQwoWyfa/* /valohai/inputs/dataset
+      - echo "Unzipping DeepFashion images..."
+      - unzip -q -d /valohai/inputs/dataset/Img /valohai/inputs/dataset/Img/img.zip
+      - echo "Formatting training images to train.record..."
+      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/train.record --categories broad --evaluation_status train
+      - echo "Formatting validation images to val.record..."
+      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/val.record --categories broad --evaluation_status val
+      - echo "Formatting test images to test.record..."
+      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/test.record --categories broad --evaluation_status test
+    inputs:
+      - name: dataset
+        default: https://s3-eu-west-1.amazonaws.com/valohai-examples/deep-fashion-detection/category-and-attribute-prediction-benchmark-v1.1.zip
 
 - step:
     name: Worker environment check

@@ -1,4 +1,5 @@
 import io
+import os
 import random
 
 import pandas as pd
@@ -7,8 +8,9 @@ from PIL import Image
 from object_detection.utils import dataset_util
 
 flags = tf.app.flags
+flags.DEFINE_string('dataset_path', '', 'Path to DeepFashion project dataset with Anno, Eval and Img directories')
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
-flags.DEFINE_string('categories', '', 'Define the level of categories. broad or fine.')
+flags.DEFINE_string('categories', '', 'Define the level of categories; broad or fine')
 flags.DEFINE_string('evaluation_status', '', 'train, val or test')
 FLAGS = flags.FLAGS
 
@@ -22,7 +24,7 @@ def create_tf_example(example, path_root):
     # get width and height of image
     width, height = f_image.size
 
-    # crop image randomly around bouding box within a 0.15*bbox extra range
+    # crop image randomly around bouding box within a 0.15 * bbox extra range
     if FLAGS.evaluation_status != "test":
 
         left = example['x_1'] - round((random.random() * 0.15 + 0.05) * (example['x_2'] - example['x_1']))
@@ -97,11 +99,13 @@ def create_tf_example(example, path_root):
 def main(_):
     writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
 
+    dataset_path = FLAGS.dataset_path
+
     # Annotation file paths
-    bbox_file = "category_and_attribute_prediction_benchmark/Anno/list_bbox.txt"
-    cat_cloth_file = "category_and_attribute_prediction_benchmark/Anno/list_category_cloth.txt"
-    cat_img_file = "category_and_attribute_prediction_benchmark/Anno/list_category_img.txt"
-    stage_file = "category_and_attribute_prediction_benchmark/Eval/list_eval_partition.txt"
+    bbox_file = os.path.join(dataset_path, 'Anno/list_bbox.txt')
+    cat_cloth_file = os.path.join(dataset_path, 'Anno/list_category_cloth.txt')
+    cat_img_file = os.path.join(dataset_path, 'Anno/list_category_img.txt')
+    stage_file = os.path.join(dataset_path, 'Eval/list_eval_partition.txt')
 
     # Read annotation files
     bbox_df = pd.read_csv(bbox_file, sep='\s+', skiprows=1)
@@ -123,7 +127,7 @@ def main(_):
 
     none_counter = 0
     for irow, example in examples_df.iterrows():
-        tf_example = create_tf_example(example, path_root="category_and_attribute_prediction_benchmark/Img/")
+        tf_example = create_tf_example(example, path_root=os.path.join(dataset_path, 'Img/'))
         if tf_example is not None:
             writer.write(tf_example.SerializeToString())
         else:
