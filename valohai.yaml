@@ -1,44 +1,45 @@
 ---
 
 - step:
-    name: Eval model
+    name: Evaluate model
     image: dcarnino/docker-tensorflow-object-detection
     command:
-      - cd /tensorflow/models/research/
-      - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
-      - cd object_detection/
+      - export PYTHONPATH=$PYTHONPATH:/tensorflow/models/research:/tensorflow/models/research/slim
+      - cd /tensorflow/models/research/object_detection/
       - mkdir -p training
-      - cp /valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config training/
+      - python3 /valohai/repository/config.py --template_path=/valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config.template --output_path=./training/faster_rcnn_inception_resnet_v2_atrous_coco.config --train_num_steps={parameters}
       - cp /valohai/repository/eval.py training/
       - mkdir training/data
       - cp /valohai/repository/deepfashion_label_map.pbtxt training/data/
-      - mv /valohai/inputs/val_records/test.record /valohai/inputs/val_records/val.record
-      - cp /valohai/inputs/val_records/val.record training/data/
+      - mv /valohai/inputs/test_records/test.record /valohai/inputs/test_records/val.record
+      - cp /valohai/inputs/test_records/val.record training/data/
       - unzip /valohai/inputs/trained_net/fine_tuned_model.zip -d training/
       - mv training/fine_tuned_model training/models
       - cp /valohai/repository/checkpoint training/models/
       - cd training/
       - mkdir models/eval
-      - python3 eval.py --logtostderr --eval_dir=./models/eval --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config --checkpoint_dir=./models
+      - python3 eval.py --logtostderr --eval_dir=./models/eval --pipeline_config_path=./faster_rcnn_inception_resnet_v2_atrous_coco.config --checkpoint_dir=./models
       - cd models
       - zip -r eval_val.zip eval
       - mv eval_val.zip /valohai/outputs/
+    parameters:
+      - name: steps
+        pass-as: "{v}"
+        type: string
+        default: 200000
     inputs:
-      - name: val_records
+      - name: test_records
       - name: trained_net
       
 - step:
     name: Resume training
     image: dcarnino/docker-tensorflow-object-detection
     command:
-      - nsteps=200
-      - cd /tensorflow/models/research/
-      - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
-      - cd object_detection/
+      - export PYTHONPATH=$PYTHONPATH:/tensorflow/models/research:/tensorflow/models/research/slim
+      - cd /tensorflow/models/research/object_detection/
       - mkdir -p training
-      - cp /valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config training/
+      - python3 /valohai/repository/config.py --template_path=/valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config.template --output_path=./training/faster_rcnn_inception_resnet_v2_atrous_coco.config --train_num_steps={parameters}
       - cp /valohai/repository/train.py training/
-      - sed -i -e "114s/200000/$nsteps/" training/faster_rcnn_inception_resnet_v2_atrous_coco.config
       - mkdir training/data
       - cp /valohai/repository/deepfashion_label_map.pbtxt training/data/
       - cp /valohai/inputs/train_records/train.record training/data/
@@ -48,12 +49,17 @@
       - cd training/
       - ls ./models/train/
       - python3 train.py --logtostderr --train_dir=./models/train --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
-      - python3 export_inference_graph.py --input_type image_tensor --pipeline_config_path ./faster_rcnn_inception_resnet_v2_atrous_coco.config --trained_checkpoint_prefix ./models/train/model.ckpt-$nsteps --output_directory ./fine_tuned_model
+      - python3 export_inference_graph.py --input_type image_tensor --pipeline_config_path=./faster_rcnn_inception_resnet_v2_atrous_coco.config --trained_checkpoint_prefix=./models/train/model.ckpt-{parameters} --output_directory=./fine_tuned_model
       - zip -r fine_tuned_model.zip fine_tuned_model
       - zip -r models.zip models
       - mv fine_tuned_model.zip /valohai/outputs/
       - mv models.zip /valohai/outputs/
       - mv tensorflow.log /valohai/outputs/
+    parameters:
+      - name: steps
+        pass-as: "{v}"
+        type: string
+        default: 200
     inputs:
       - name: train_records
       - name: val_records
@@ -63,14 +69,11 @@
     name: Train model
     image: dcarnino/docker-tensorflow-object-detection
     command:
-      - nsteps=100
-      - cd /tensorflow/models/research/
-      - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
-      - cd object_detection/
+      - export PYTHONPATH=$PYTHONPATH:/tensorflow/models/research:/tensorflow/models/research/slim
+      - cd /tensorflow/models/research/object_detection/
       - mkdir -p training
-      - cp /valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config training/
+      - python3 /valohai/repository/config.py --template_path=/valohai/repository/faster_rcnn_inception_resnet_v2_atrous_coco.config.template --output_path=./training/faster_rcnn_inception_resnet_v2_atrous_coco.config --train_num_steps={parameters}
       - cp /valohai/repository/train.py training/
-      - sed -i -e "114s/200000/$nsteps/" training/faster_rcnn_inception_resnet_v2_atrous_coco.config
       - mkdir training/data
       - cp /valohai/repository/deepfashion_label_map.pbtxt training/data/
       - cp /valohai/inputs/train_records/train.record training/data/
@@ -80,47 +83,51 @@
       - mkdir training/models/train
       - cp export_inference_graph.py training/
       - cd training/
-      - python3 train.py --logtostderr --train_dir=./models/train --pipeline_config_path=faster_rcnn_inception_resnet_v2_atrous_coco.config
-      - python3 export_inference_graph.py --input_type image_tensor --pipeline_config_path ./faster_rcnn_inception_resnet_v2_atrous_coco.config --trained_checkpoint_prefix ./models/train/model.ckpt-$nsteps --output_directory ./fine_tuned_model
+      - python3 train.py --logtostderr --train_dir=./models/train --pipeline_config_path=./faster_rcnn_inception_resnet_v2_atrous_coco.config
+      - python3 export_inference_graph.py --input_type image_tensor --pipeline_config_path=./faster_rcnn_inception_resnet_v2_atrous_coco.config --trained_checkpoint_prefix=./models/train/model.ckpt-{parameters} --output_directory=./fine_tuned_model
       - zip -r fine_tuned_model.zip fine_tuned_model
       - zip -r train.zip ./models/train
       - mv fine_tuned_model.zip /valohai/outputs/
       - mv train.zip /valohai/outputs/
       - mv tensorflow.log /valohai/outputs/
+    parameters:
+      - name: steps
+        pass-as: "{v}"
+        type: string
+        default: 200
     inputs:
       - name: train_records
       - name: val_records
       - name: pretrained_net
-        default: http://download.tensorflow.org/models/object_detection/faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz
+        default: https://s3-eu-west-1.amazonaws.com/valohai-examples/deep-fashion-detection/faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28.tar.gz
 
 - step:
     name: Dataset preparation
     image: dcarnino/docker-tensorflow-object-detection
     command:
-      - cd /tensorflow/models/research/
-      - export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
-      - cp /valohai/repository/deep_fashion_to_tfrecord.py object_detection/
-      - cd object_detection
-      - mkdir -p category_and_attribute_prediction_benchmark
-      - mkdir -p /valohai/inputs/category_and_attribute_prediction_benchmark
-      - echo "Downloading from Google Drive..."
-      - CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=1eFP3_HApf-AsYF--0OIlDNSdWevn0byq" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
-      - wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=1eFP3_HApf-AsYF--0OIlDNSdWevn0byq" -O /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa
-      - rm -rf /tmp/cookies.txt
-      - echo "Unzipping deep fashion dataset..."
-      - unzip -q /valohai/inputs/category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa -d category_and_attribute_prediction_benchmark/
-      - mv category_and_attribute_prediction_benchmark/AACt2dLasqSDsCf-kcQwoWyfa ./AACt2dLasqSDsCf-kcQwoWyfa
-      - mv ./AACt2dLasqSDsCf-kcQwoWyfa/* category_and_attribute_prediction_benchmark/
-      - cd category_and_attribute_prediction_benchmark/Img/
-      - unzip -q img.zip
-      - cd ../../
-      - echo "Formatting training images to tfrecord..."
-      - python3 deep_fashion_to_tfrecord.py --output_path train.record --categories broad --evaluation_status train
-      - echo "Formatting validation images to tfrecord..."
-      - python3 deep_fashion_to_tfrecord.py --output_path val.record --categories broad --evaluation_status val
-      - echo "Formatting test images to tfrecord..."
-      - python3 deep_fashion_to_tfrecord.py --output_path test.record --categories broad --evaluation_status test
-      - mv *.record /valohai/outputs/
+      - export PYTHONPATH=$PYTHONPATH:/tensorflow/models/research:/tensorflow/models/research/slim
+      - cd /tensorflow/models/research/object_detection/
+      - cp /valohai/repository/deep_fashion_to_tfrecord.py .
+      - echo "Unzipping DeepFashion dataset wrapper..."
+      - unzip -q -d /valohai/inputs/dataset /valohai/inputs/dataset/*.zip
+      - mv /valohai/inputs/dataset/AACt2dLasqSDsCf-kcQwoWyfa/* /valohai/inputs/dataset
+      - echo "Unzipping DeepFashion images..."
+      - unzip -q -d /valohai/inputs/dataset/Img /valohai/inputs/dataset/Img/img.zip
+      - echo "Formatting training images to train.record..."
+      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/train.record --evaluation_status train {parameters}
+      - echo "Formatting validation images to val.record..."
+      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/val.record --evaluation_status val {parameters}
+      - echo "Formatting test images to test.record..."
+      - python3 deep_fashion_to_tfrecord.py --dataset_path /valohai/inputs/dataset --output_path /valohai/outputs/test.record --evaluation_status test {parameters}
+    parameters:
+      - name: categories
+        pass-as: --categories {v}
+        description: The level of categories; broad or fine
+        type: string
+        default: broad
+    inputs:
+      - name: dataset
+        default: https://s3-eu-west-1.amazonaws.com/valohai-examples/deep-fashion-detection/category-and-attribute-prediction-benchmark-v1.1.zip
 
 - step:
     name: Worker environment check
