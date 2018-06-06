@@ -103,8 +103,7 @@ def main(unused_argv):
         is_training=False)
 
     def get_next(config):
-        return dataset_util.make_initializable_iterator(
-            dataset_builder.build(config)).get_next()
+        return dataset_util.make_initializable_iterator(dataset_builder.build(config)).get_next()
 
     create_input_dict_fn = functools.partial(get_next, input_config)
 
